@@ -19,6 +19,16 @@ dependencies = [
     "tqdm>=4.67.3",
 ]
 
+[project.optional-dependencies]
+# `bench` extra: also installs mcp-adapted-bench (from the submodule),
+# which itself pulls in BFCL / τ²-bench / MCP-Universe
+bench = [
+    "mcp-adapted-bench",
+]
+
+[tool.uv.sources]
+mcp-adapted-bench = { path = "mcp-adapted-bench", editable = true }
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

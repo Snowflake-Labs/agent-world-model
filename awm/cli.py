@@ -12,6 +12,8 @@ class TopCmd(Enum):
     agent = "agent"
     # Verify agent run outputs using code-augmented LLM-as-a-Judge or purely code-based Judge
     verify = "verify"
+    # please install mcp-adapated-bench first, for benchmarking agents on mcp-adapted-bench including bfclv3, tau2, and mcp-universe
+    bench = "bench"
 
 
 class GenCmd(Enum):
@@ -60,6 +62,11 @@ def _build_commands() -> dict:
     from awm.core.agent import Config as AgentConfig
     from awm.core.verify import Config as VerifyConfig
 
+    try:
+        from awm.eval.infer_eval import InferEvalConfig
+    except ImportError as e:
+        InferEvalConfig = None
+
     return {
         TopCmd.gen: {
             GenCmd.scenario: ScenarioConfig,
@@ -79,6 +86,7 @@ def _build_commands() -> dict:
         },
         TopCmd.agent: AgentConfig,
         TopCmd.verify: VerifyConfig,
+        TopCmd.bench: InferEvalConfig,
     }
 
 
@@ -98,6 +106,7 @@ DISPATCH = {
     (TopCmd.env, EnvCmd.reset_db): "awm.core.reset",
     (TopCmd.agent,): "awm.core.agent",
     (TopCmd.verify,): "awm.core.verify",
+    (TopCmd.bench,): "awm.eval.infer_eval",
 }
 
 

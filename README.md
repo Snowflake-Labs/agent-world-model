@@ -107,6 +107,7 @@ Available commands:
   └── reset_db   Reset databases to initial state
   agent      Run a tool-use agent to solve a task by interacting with the environment
   verify     Verify agent run outputs using code-augmented LLM-as-a-Judge or purely code-based Judge
+  bench      Run evaluation on mcp-adapted-bench including bfclv3, tau2, and mcp-universe
 ```
 
 Use `awm <command> --help` to see options for any command, e.g. `awm gen task --help`.
@@ -235,6 +236,21 @@ awm agent \
 # after interaction, the trajectory will be saved to outputs/agents/<timestamp>, we can verify it by
 awm verify --input outputs/agents/<timestamp> --mode sql
 ```
+
+## Benchmark
+To align the evaluation with the trained tool-use protocol that requires agents to finish the task via unified MCP interface: `list_tools` and `call_tool`, we modified and adapated the evaluation harness of the following benchmarks: BFCLv3, τ²-bench-verified, and MCP-Universe. See more details at [mcp-adapted-bench](https://github.com/Raibows/mcp-adapted-bench). Remember to set the aforementioned env vars for the LLM agent API config before running the evaluation.
+
+```bash
+# install evaluation harness dependencies
+git submodule update --init --recursive mcp-adapted-bench
+uv sync --extra bench
+
+# run evaluation, the tested agent LLM should be set by env vars as described in the Setup section
+awm bench --mode bfcl --output_dir ./outputs/bfcl
+awm bench --mode tau2 --output_dir ./outputs/tau2
+awm bench --mode mcp_universe --output_dir ./outputs/mcp_universe
+```
+
 
 ## Citation
 
